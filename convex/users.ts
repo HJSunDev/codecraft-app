@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 
 // 定义一个创建用户的 mutation
@@ -23,5 +23,28 @@ export const createUser = mutation({
       ...args, // 使用传入的参数
       isPro: false, // 默认设置用户为非专业版
     });
+  },
+});
+
+// 定义一个获取用户的 query
+export const getUser = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if(!args.userId){
+      throw new Error("User ID is required");
+    }
+    // 使用 by_user 索引进行查询，性能更好
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+    // 如果用户不存在，则返回 null
+    if(!user){
+      return null;
+    }
+    // 返回查询到的用户
+    return user;
   },
 });
