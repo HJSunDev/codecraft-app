@@ -1,4 +1,4 @@
-import { Monaco } from "@monaco-editor/react";
+import type * as monacoEditor from "monaco-editor";
 import { Id } from "../convex/_generated/dataModel";
 
 // 主题接口，定义了主题的基本属性
@@ -50,10 +50,10 @@ export interface CodeEditorState {
   error: string | null; // 当前错误信息
   theme: string; // 当前主题
   fontSize: number; // 字体大小
-  editor: Monaco | null; // Monaco编辑器实例
+  editor: monacoEditor.editor.IStandaloneCodeEditor | null; // Monaco编辑器实例
   executionResult: ExecutionResult | null; // 执行结果
 
-  setEditor: (editor: Monaco) => void; // 设置编辑器实例
+  setEditor: (editor: monacoEditor.editor.IStandaloneCodeEditor) => void; // 设置编辑器实例
   getCode: () => string; // 获取当前代码
   setLanguage: (language: string) => void; // 设置语言
   setTheme: (theme: string) => void; // 设置主题
