@@ -14,7 +14,7 @@ export const Navbar = () => {
               {/* Logo 图标 */}
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 blur-lg" />
-                <Code2 className="size-6 text-indigo-400 relative transform -rotate-6 group-hover:rotate-0 transition-transform duration-500" />
+                <Code2 className="size-6 text-indigo-400" />
               </div>
 
               {/* Logo 文字 */}
