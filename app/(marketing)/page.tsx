@@ -2,6 +2,7 @@ import React from "react";
 import { Navbar } from "./_components/navbar";
 import { Footer } from "./_components/footer";
 import { ArrowRight, Code2, Sparkles, Zap } from "lucide-react";
+import { ThemeSelector } from "./_components/ThemeSelector";
 
 // 特性卡片组件接口定义
 interface FeatureCardProps {
@@ -50,7 +51,7 @@ export default function MarketingPage() {
         <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
           <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
             <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-              
+            <ThemeSelector />
               {/* 英雄区域：包含主标题和行动按钮 */}
               <section className="relative">
                 {/* 背景渐变效果 */}
