@@ -2,10 +2,10 @@
 
 import { Navbar } from "./_components/navbar";
 import { Footer } from "./_components/footer";
-import { ArrowRight, Code2, Sparkles } from "lucide-react";
 import { ThemeSelector } from "./_components/ThemeSelector";
 import { LanguageSelector } from "./_components/LanguageSelector";
 import { EditorPanel } from "./_components/EditorPanel";
+import { OutputPanel } from "./_components/OutputPanel";
 import { motion } from "framer-motion";
 
 export default function MarketingPage() {
@@ -14,38 +14,52 @@ export default function MarketingPage() {
       <Navbar />
       
       <main className="flex-1 flex flex-col">
-        {/* 英雄区域 */}
-        <div className="relative w-full  py-20 pt-32">
+        {/* 编辑器区域 */}
+        <div className="relative w-full py-20 pt-32">
           {/* 背景装饰 */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
           
           <div className="container mx-auto px-4">
-            {/* 编辑器展示区域 */}
+            {/* 工具栏 */}
             <motion.div
-              className="relative rounded-2xl overflow-hidden shadow-2xl"
-              initial={{ opacity: 0, y: 40 }}
+              className="flex items-center justify-end gap-3 mb-6"
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+              transition={{ duration: 0.5 }}
             >
-              {/* 工具栏背景 */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-[#1E293B]/80 backdrop-blur-sm border-b border-white/5">
-                <div className="h-full w-full flex items-center justify-end gap-3 px-6">
-                  <LanguageSelector />
-                  <ThemeSelector />
-                </div>
-              </div>
-
-              {/* 编辑器容器 */}
-              <div className="pt-16">
-                <EditorPanel />
-              </div>
-
-              {/* 装饰性光效 */}
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5" />
-              </div>
+              <LanguageSelector />
+              <ThemeSelector />
             </motion.div>
 
+            {/* 编辑器和输出面板容器 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 编辑器面板 */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <EditorPanel />
+              </motion.div>
+
+              {/* 输出面板 */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <OutputPanel />
+              </motion.div>
+            </div>
+
+            {/* 装饰性元素 */}
+            <div className="absolute inset-0 pointer-events-none">
+              {/* 左侧光效 */}
+              <div className="absolute left-0 top-1/4 w-1/3 h-1/2 bg-blue-500/30 rounded-full blur-[128px] opacity-20" />
+              
+              {/* 右侧光效 */}
+              <div className="absolute right-0 bottom-1/4 w-1/3 h-1/2 bg-purple-500/30 rounded-full blur-[128px] opacity-20" />
+            </div>
           </div>
         </div>
       </main>
