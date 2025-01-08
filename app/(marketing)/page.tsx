@@ -6,6 +6,7 @@ import { ThemeSelector } from "./_components/ThemeSelector";
 import { LanguageSelector } from "./_components/LanguageSelector";
 import { EditorPanel } from "./_components/EditorPanel";
 import { OutputPanel } from "./_components/OutputPanel";
+import { RunButton } from "./_components/RunButton";
 import { motion } from "framer-motion";
 
 export default function MarketingPage() {
@@ -22,13 +23,20 @@ export default function MarketingPage() {
           <div className="container mx-auto px-4">
             {/* 工具栏 */}
             <motion.div
-              className="flex items-center justify-end gap-3 mb-6"
+              className="flex items-center justify-between gap-3 mb-6"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <LanguageSelector />
-              <ThemeSelector />
+              {/* 运行按钮 */}
+              <RunButton className="relative px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 
+                hover:shadow-blue-500/25 group" />
+
+              {/* 右侧工具 */}
+              <div className="flex items-center gap-3">
+                <LanguageSelector />
+                <ThemeSelector />
+              </div>
             </motion.div>
 
             {/* 编辑器和输出面板容器 */}

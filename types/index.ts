@@ -27,9 +27,12 @@ export interface LanguageRuntime {
 // 执行代码响应接口，定义了代码执行的响应结构
 export interface ExecuteCodeResponse {
   compile?: {
-    output: string; // 编译输出
+    code: number;
+    output: string; // 运行输出
+    stderr: string; // 标准错误输出
   };
   run?: {
+    code: number;
     output: string; // 运行输出
     stderr: string; // 标准错误输出
   };

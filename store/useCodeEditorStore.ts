@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { CodeEditorState } from "../types";
 import type * as monacoEditor from "monaco-editor";
+import { create } from "zustand";
 import { LANGUAGE_CONFIG } from "@/app/(marketing)/_constants";
+import type { CodeEditorState, ExecuteCodeResponse, ExecutionResult, LanguageRuntime } from "../types";
 
 
 // 从本地存储中获取代码编辑器状态
@@ -27,6 +27,104 @@ const getInitialState = () => {
     theme: savedTheme, // 获取保存的主题设置
   };
 };
+
+// 代码执行服务类
+class CodeExecutionService {
+  private static readonly API_URL = "https://emkc.org/api/v2/piston/execute";
+
+  // 准备执行环境
+  private static prepareExecutionData(code: string, runtime: LanguageRuntime) {
+    return {
+      language: runtime.language,
+      version: runtime.version,
+      files: [{ content: code }] 
+    };
+  }
+
+  // 执行代码
+  static async execute(code: string, runtime: LanguageRuntime): Promise<ExecuteCodeResponse> {
+    const executionData = this.prepareExecutionData(code, runtime);
+    const response = await fetch(this.API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(executionData)
+    });
+    
+    if (!response.ok) {
+      throw new Error("API请求失败");
+    }
+    
+    return response.json();
+  }
+}
+
+// 执行结果处理类
+class ExecutionResultHandler {
+  private code: string;
+  private result: ExecuteCodeResponse;
+
+  constructor(code: string, result: ExecuteCodeResponse) {
+    this.code = code;
+    this.result = result;
+  }
+
+  // 处理API错误
+  private handleApiError(): ExecutionResult | null {
+    if ("message" in this.result) {
+      return {
+        code: this.code,
+        output: "",
+        error: this.result.message as string
+      };
+    }
+    return null;
+  }
+
+  // 处理编译错误
+  private handleCompileError(): ExecutionResult | null {
+    const compile = this.result.compile;
+    if (compile && compile.code !== 0) {
+      return {
+        code: this.code,
+        output: "",
+        error: compile?.stderr || compile?.output || "编译错误"
+      };
+    }
+    return null;
+  }
+
+  // 处理运行时错误
+  private handleRuntimeError(): ExecutionResult | null {
+    const run = this.result.run;
+    if (run && run.code !== 0) {
+      return {
+        code: this.code,
+        output: "",
+        error: run?.stderr || run?.output || "运行时错误"
+      };
+    }
+    return null;
+  }
+
+  // 处理成功结果
+  private handleSuccess(): ExecutionResult {
+    return {
+      code: this.code,
+      output: (this.result.run?.output || "").trim(),
+      error: null
+    };
+  }
+
+  // 处理执行结果
+  process(): ExecutionResult {
+    return (
+      this.handleApiError() ||
+      this.handleCompileError() ||
+      this.handleRuntimeError() ||
+      this.handleSuccess()
+    );
+  }
+}
 
 // 创建代码编辑器的状态管理
 export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
@@ -102,9 +200,53 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       });
     },
 
-    // 运行代码的逻辑
+    // 运行代码
     runCode: async () => {
-      // todo: 实现代码运行逻辑
+      const { language, getCode } = get();
+      const code = getCode().trim();
+
+      // 验证代码
+      if (!code) {
+        const result: ExecutionResult = {
+          code: "",
+          output: "",
+          error: "请输入要执行的代码"
+        };
+        set({ error: result.error, executionResult: result });
+        return;
+      }
+
+      // 初始化执行状态
+      set({ isRunning: true, error: null, output: "", executionResult: null });
+
+      try {
+        // 获取运行时配置
+        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
+        
+        // 执行代码
+        const response = await CodeExecutionService.execute(code, runtime);
+        
+        // 处理执行结果
+        const handler = new ExecutionResultHandler(code, response);
+        const result = handler.process();
+        
+        // 更新状态
+        set({
+          output: result.output,
+          error: result.error,
+          executionResult: result
+        });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "代码执行过程中发生错误";
+        const result: ExecutionResult = {
+          code,
+          output: "",
+          error: errorMessage
+        };
+        set({ error: errorMessage, executionResult: result });
+      } finally {
+        set({ isRunning: false });
+      }
     },
   };
 });
