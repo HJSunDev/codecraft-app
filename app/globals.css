@@ -28,6 +28,16 @@
   }
 }
 
+/* Monaco 编辑器滚动条样式 */
+.monaco-editor .scrollbar .slider {
+  background: rgba(75, 85, 99, 0.3) !important;
+  border-radius: 9999px !important;
+}
+
+.monaco-editor .scrollbar .slider:hover {
+  background: rgba(75, 85, 99, 0.5) !important;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
