@@ -250,3 +250,8 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     },
   };
 });
+
+// 获取执行结果
+export const getExecutionResult = () => {
+  return useCodeEditorStore.getState().executionResult;
+}
