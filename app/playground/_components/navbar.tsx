@@ -1,46 +1,98 @@
-import React from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { Code2 } from "lucide-react";
+import { Code2, Home, Share2, Settings, BookMarked } from "lucide-react";
+import { motion } from "framer-motion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const Navbar = () => {
   return (
-    <div className="fixed top-0 w-full z-50 border-b border-indigo-500/10 bg-gradient-to-b from-[#0B1121] to-[#0B1121]/80 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex h-16 items-center justify-between px-6">
-          {/* Logo 和导航区域 */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3 group">
-              {/* Logo 图标 */}
+    <div className="fixed top-0 w-full z-50 border-b border-white/[0.1] bg-[#0B1121]/80 backdrop-blur-sm">
+      <div className="container mx-auto px-4">
+        <div className="flex h-14 items-center justify-between">
+          {/* 左侧区域：Logo和基础操作 */}
+          <div className="flex items-center gap-6">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-500 blur-lg" />
-                <Code2 className="size-6 text-indigo-400" />
+                <Code2 className="size-5 text-indigo-400" />
               </div>
-
-              {/* Logo 文字 */}
-              <div className="flex flex-col">
-                <span className="block text-lg font-semibold bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 text-transparent bg-clip-text">
-                  CodeCraft
-                </span>
-                <span className="block text-xs text-indigo-400/60 font-medium">
-                  Code Platform
-                </span>
-              </div>
+              <span className="text-base font-semibold bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 text-transparent bg-clip-text">
+                CodeCraft
+              </span>
             </Link>
 
-            {/* 导航链接 */}
-            <nav className="hidden md:flex items-center space-x-4">
-              <Link
-                href="/snippets"
-                className="group flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-indigo-300/70 hover:text-indigo-300 transition-colors"
-              >
-                <span>Code Snippets</span>
-              </Link>
-            </nav>
+            {/* 分隔线 */}
+            <div className="h-5 w-px bg-white/[0.1]" />
+
+            {/* 快捷操作按钮 */}
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                {/* 分享按钮 */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-white/[0.05] transition-all duration-200"
+                    >
+                      <Share2 className="size-4 text-indigo-300/70 group-hover:text-indigo-300" />
+                      <span className="text-sm text-indigo-300/70 group-hover:text-indigo-300">分享</span>
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>分享代码</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {/* 收藏按钮 */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-white/[0.05] transition-all duration-200"
+                    >
+                      <BookMarked className="size-4 text-indigo-300/70 group-hover:text-indigo-300" />
+                      <span className="text-sm text-indigo-300/70 group-hover:text-indigo-300">收藏</span>
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>保存到收藏夹</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {/* 设置按钮 */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-white/[0.05] transition-all duration-200"
+                    >
+                      <Settings className="size-4 text-indigo-300/70 group-hover:text-indigo-300" />
+                      <span className="text-sm text-indigo-300/70 group-hover:text-indigo-300">设置</span>
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>编辑器设置</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
 
-          {/* 用户认证区域 */}
+          {/* 右侧区域：用户操作 */}
           <div className="flex items-center gap-6">
+            {/* 返回首页 */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-indigo-300/70 hover:text-indigo-300 transition-colors rounded-lg hover:bg-white/[0.05]"
+            >
+              <Home className="size-4" />
+              <span>首页</span>
+            </Link>
+
             {/* 未登录状态：显示登录和注册按钮 */}
             <SignedOut>
               <div className="flex items-center gap-4">

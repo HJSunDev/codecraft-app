@@ -1,78 +1,125 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Navbar } from "./_components/navbar";
-import { Footer } from "./_components/footer";
-import { ThemeSelector } from "./_components/ThemeSelector";
-import { LanguageSelector } from "./_components/LanguageSelector";
 import { EditorPanel } from "./_components/EditorPanel";
 import { OutputPanel } from "./_components/OutputPanel";
-import { RunButton } from "./_components/RunButton";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
+import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import { cn } from "@/lib/utils";
 
-export default function MarketingPage() {
+export default function PlaygroundPage() {
+  // 控制输出面板的显示状态
+  const [isOutputVisible, setIsOutputVisible] = useState(false);
+  // 获取运行状态
+  const { isRunning } = useCodeEditorStore();
+
+  // 监听运行状态，自动展开输出面板
+  useEffect(() => {
+    if (isRunning) {
+      setIsOutputVisible(true);
+    }
+  }, [isRunning]);
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* 导航栏 - 固定高度 */}
       <Navbar />
       
-      <main className="flex-1 flex flex-col">
-        {/* 编辑器区域 */}
-        <div className="relative w-full py-20 pt-32">
-          {/* 背景装饰 */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
-          
-          <div className="container mx-auto px-4">
-            {/* 工具栏 */}
-            <motion.div
-              className="flex items-center justify-between gap-3 mb-6"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {/* 运行按钮 */}
-              <RunButton className="relative px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 
-                hover:shadow-blue-500/25 group" />
-
-              {/* 右侧工具 */}
-              <div className="flex items-center gap-3">
-                <LanguageSelector />
-                <ThemeSelector />
-              </div>
-            </motion.div>
-
-            {/* 编辑器和输出面板容器 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* 编辑器面板 */}
+      {/* 主内容区域 - 自适应高度 */}
+      <main className="flex-1 pt-14 bg-[#0B1121] flex items-center">
+        {/* 内容容器 */}
+        <div className="w-full max-w-[1680px] mx-auto px-6">
+          {/* 固定高度的内容区域 */}
+          <div className="h-[calc(100vh-12rem)] flex flex-col">
+            {/* 编辑器和输出面板区域 */}
+            <div className="flex items-stretch gap-4 h-full">
+              {/* 编辑器区域 */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                className="relative flex-1 min-w-0"
+                animate={{
+                  flex: isOutputVisible ? "1 1 65%" : "1 1 100%"
+                }}
+                transition={{ duration: 0.3 }}
               >
-                <EditorPanel />
+                {/* 编辑器面板 */}
+                <div className="h-full rounded-xl overflow-hidden">
+                  <EditorPanel />
+                </div>
+
+                {/* 展开按钮 - 悬浮在编辑器右侧中间 */}
+                <AnimatePresence>
+                  {!isOutputVisible && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute top-1/2 -right-3 -translate-y-1/2 z-10"
+                    >
+                      <button
+                        onClick={() => setIsOutputVisible(true)}
+                        className="group flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#1e1e2e]/90 hover:bg-[#262637] border border-white/[0.1] shadow-lg transition-all duration-200 hover:scale-105"
+                      >
+                        <span className="text-xs text-indigo-300/70 group-hover:text-indigo-300 transition-colors">
+                          输出
+                        </span>
+                        <ArrowLeftToLine className="size-4 text-indigo-300/70 group-hover:text-indigo-300 transition-colors" />
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
 
               {/* 输出面板 */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <OutputPanel />
-              </motion.div>
-            </div>
+              <AnimatePresence mode="wait">
+                {isOutputVisible && (
+                  <motion.div
+                    className="relative flex-1 min-w-0"
+                    initial={{ 
+                      opacity: 0,
+                      flex: "0 0 0%"
+                    }}
+                    animate={{ 
+                      opacity: 1,
+                      flex: "1 1 35%"
+                    }}
+                    exit={{ 
+                      opacity: 0,
+                      flex: "0 0 0%"
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* 收起按钮 - 悬浮在输出面板左侧中间 */}
+                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 z-10">
+                      <button
+                        onClick={() => setIsOutputVisible(false)}
+                        className="group flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#1e1e2e]/90 hover:bg-[#262637] border border-white/[0.1] shadow-lg transition-all duration-200 hover:scale-105"
+                      >
+                        <ArrowRightToLine className="size-4 text-indigo-300/70 group-hover:text-indigo-300 transition-colors" />
+                        <span className="text-xs text-indigo-300/70 group-hover:text-indigo-300 transition-colors">
+                          收起
+                        </span>
+                      </button>
+                    </div>
 
-            {/* 装饰性元素 */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* 左侧光效 */}
-              <div className="absolute left-0 top-1/4 w-1/3 h-1/2 bg-blue-500/30 rounded-full blur-[128px] opacity-20" />
-              
-              {/* 右侧光效 */}
-              <div className="absolute right-0 bottom-1/4 w-1/3 h-1/2 bg-purple-500/30 rounded-full blur-[128px] opacity-20" />
+                    {/* 输出面板内容 */}
+                    <div className="h-full rounded-xl overflow-hidden">
+                      <OutputPanel />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
-      </main>
 
-      <Footer />
+        {/* 装饰性元素 */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute left-0 top-1/4 w-1/3 h-1/2 bg-blue-500/20 rounded-full blur-[128px] opacity-20 animate-pulse" />
+          <div className="absolute right-0 bottom-1/4 w-1/3 h-1/2 bg-purple-500/20 rounded-full blur-[128px] opacity-20 animate-pulse" />
+        </div>
+      </main>
     </div>
   );
 } 

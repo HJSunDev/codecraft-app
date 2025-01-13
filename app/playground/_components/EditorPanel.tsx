@@ -17,6 +17,10 @@ import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { LanguageSelector } from "./LanguageSelector";
+import { ThemeSelector } from "./ThemeSelector";
+import { RunButton } from "./RunButton";
+
 // 编辑器选项配置
 const EDITOR_OPTIONS = {
   minimap: { enabled: false },
@@ -101,19 +105,13 @@ export const EditorPanel = () => {
         <header className="flex items-center justify-between mb-4">
           {/* 左侧信息 */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center size-8 rounded-lg bg-[#1e1e2e] ring-1 ring-white/5">
-              <Image
-                src={currentLanguage.logoPath}
-                alt={`${currentLanguage.label} logo`}
-                width={24}
-                height={24}
-                className="size-5 object-contain"
-              />
+            <div className="flex items-center gap-3 p-1.5 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 backdrop-blur-sm border border-white/[0.1] shadow-lg">
+              <LanguageSelector />
+              <div className="h-5 w-px bg-white/[0.1]" />
+              <ThemeSelector />
             </div>
-            <div>
-              <h2 className="text-sm font-medium text-white">代码编辑器</h2>
-              <p className="text-xs text-gray-500">编写并执行您的代码</p>
-            </div>
+
+            <RunButton className="relative px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300 group shadow-lg" />
           </div>
 
           {/* 右侧工具栏 */}
@@ -122,7 +120,7 @@ export const EditorPanel = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center gap-3 px-3 py-2 bg-[#1e1e2e] rounded-lg ring-1 ring-white/5">
+                  <div className="flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg ring-1 ring-white/5">
                     <TypeIcon className="size-4 text-gray-400" />
                     <Slider
                       value={[fontSize]}
@@ -151,7 +149,7 @@ export const EditorPanel = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleReset}
-                    className="p-2 bg-[#1e1e2e] hover:bg-[#2a2a3a] rounded-lg ring-1 ring-white/5 transition-colors"
+                    className="p-2 bg-gradient-to-r from-gray-800 to-gray-900 hover:bg-gray-700 rounded-lg ring-1 ring-white/5 transition-colors"
                   >
                     <RotateCcwIcon className="size-4 text-gray-400" />
                   </motion.button>
