@@ -2,7 +2,7 @@
 
 export const EditorPanelSkeleton = () => {
   return (
-    <div className="w-full h-[600px] bg-[#1e1e2e] rounded-lg animate-pulse">
+    <div className="w-full h-full bg-[#1e1e2e] rounded-lg animate-pulse">
       {/* 模拟代码行 */}
       <div className="p-4 space-y-3">
         {[...Array(15)].map((_, i) => (

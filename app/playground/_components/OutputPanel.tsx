@@ -42,10 +42,10 @@ export const OutputPanel = () => {
   };
 
   return (
-    <div className="relative">
-      <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] p-6">
+    <div className="relative h-full">
+      <div className="relative h-full bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] flex flex-col">
         {/* 输出面板头部 */}
-        <header className="flex items-center justify-between mb-4">
+        <header className="flex-shrink-0 flex items-center justify-between p-6 pb-4">
           {/* 左侧信息 */}
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center size-8 rounded-lg bg-[#1e1e2e] ring-1 ring-white/5">
@@ -79,75 +79,73 @@ export const OutputPanel = () => {
           )}
         </header>
 
-        {/* 输出内容区域 */}
-        <div className="relative group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
-          <div className="relative h-[600px] p-6 font-mono text-sm bg-[#1e1e2e]/50 backdrop-blur-sm overflow-auto custom-scrollbar">
-            <AnimatePresence mode="wait">
-              {isRunning ? (
-                <motion.div
-                  key="running"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <RunningCodeSkeleton />
-                </motion.div>
-              ) : error ? (
-                <motion.div
-                  key="error"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-start gap-4"
-                >
-                  <div className="flex-shrink-0 p-3 rounded-xl bg-red-500/10 text-red-400">
-                    <AlertTriangle className="size-5" />
-                  </div>
-                  <div className="space-y-2 pt-1">
-                    <h3 className="font-medium text-red-400">执行错误</h3>
-                    <pre className="whitespace-pre-wrap text-red-400/80 leading-relaxed">
-                      {error}
-                    </pre>
-                  </div>
-                </motion.div>
-              ) : output ? (
-                <motion.div
-                  key="output"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                      <CheckCircle className="size-5" />
+        {/* 输出内容区域 - 使用flex-1确保填充剩余空间 */}
+        <div className="flex-1 px-6 pb-6">
+          <div className="relative h-full group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
+            <div className="h-full p-6 font-mono text-sm bg-[#1e1e2e]/50 backdrop-blur-sm overflow-auto custom-scrollbar">
+              <AnimatePresence mode="wait">
+                {isRunning ? (
+                  <motion.div
+                    key="running"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="h-full"
+                  >
+                    <RunningCodeSkeleton />
+                  </motion.div>
+                ) : error ? (
+                  <motion.div
+                    key="error"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-start gap-4"
+                  >
+                    <div className="flex-shrink-0 p-3 rounded-xl bg-red-500/10 text-red-400">
+                      <AlertTriangle className="size-5" />
                     </div>
-                    <h3 className="font-medium text-emerald-400">执行成功</h3>
-                  </div>
-                  <pre className="whitespace-pre-wrap text-gray-300 leading-relaxed">
-                    {output}
-                  </pre>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex flex-col items-center justify-center text-gray-500"
-                >
-                  <div className="flex items-center justify-center size-12 rounded-xl bg-gray-800/50 ring-1 ring-gray-700/50 mb-4">
-                    <Clock className="size-6" />
-                  </div>
-                  <p className="text-center">运行代码以查看输出结果...</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* 装饰性光效 */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="space-y-2 pt-1">
+                      <h3 className="font-medium text-red-400">执行错误</h3>
+                      <pre className="whitespace-pre-wrap text-red-400/80 leading-relaxed">
+                        {error}
+                      </pre>
+                    </div>
+                  </motion.div>
+                ) : output ? (
+                  <motion.div
+                    key="output"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="space-y-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                        <CheckCircle className="size-5" />
+                      </div>
+                      <h3 className="font-medium text-emerald-400">执行成功</h3>
+                    </div>
+                    <pre className="whitespace-pre-wrap text-gray-300 leading-relaxed">
+                      {output}
+                    </pre>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="h-full flex flex-col items-center justify-center text-gray-500"
+                  >
+                    <div className="flex items-center justify-center size-12 rounded-xl bg-gray-800/50 ring-1 ring-gray-700/50 mb-4">
+                      <Clock className="size-6" />
+                    </div>
+                    <p className="text-center">运行代码以查看输出结果...</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>

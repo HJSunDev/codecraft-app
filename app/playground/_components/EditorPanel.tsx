@@ -99,10 +99,10 @@ export const EditorPanel = () => {
   if (!mounted) return null;
 
   return (
-    <div className="relative">
-      <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] p-6">
+    <div className="relative h-full">
+      <div className="relative h-full bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] flex flex-col">
         {/* 编辑器头部 */}
-        <header className="flex items-center justify-between mb-4">
+        <header className="flex-shrink-0 flex items-center justify-between p-6 pb-4">
           {/* 左侧信息 */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-3 p-1.5 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 backdrop-blur-sm border border-white/[0.1] shadow-lg">
@@ -176,29 +176,31 @@ export const EditorPanel = () => {
           </div>
         </header>
 
-        {/* 编辑器主体 */}
-        <div className="relative group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
-          {clerk.loaded ? (
-            <Editor
-              height="600px"
-              language={currentLanguage.monacoLanguage}
-              theme={theme}
-              onChange={handleEditorChange}
-              beforeMount={defineMonacoThemes}
-              onMount={setEditor}
-              options={{
-                ...EDITOR_OPTIONS,
-                fontSize,
-              }}
-              className="custom-scrollbar"
-            />
-          ) : (
-            <EditorPanelSkeleton />
-          )}
+        {/* 编辑器主体 - 使用flex-1确保填充剩余空间 */}
+        <div className="flex-1 px-6 pb-6">
+          <div className="relative h-full group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
+            {clerk.loaded ? (
+              <Editor
+                height="100%"
+                language={currentLanguage.monacoLanguage}
+                theme={theme}
+                onChange={handleEditorChange}
+                beforeMount={defineMonacoThemes}
+                onMount={setEditor}
+                options={{
+                  ...EDITOR_OPTIONS,
+                  fontSize,
+                }}
+                className="custom-scrollbar h-full"
+              />
+            ) : (
+              <EditorPanelSkeleton />
+            )}
 
-          {/* 编辑器装饰效果 */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            {/* 编辑器装饰效果 */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            </div>
           </div>
         </div>
       </div>
